@@ -4,8 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,
-  CalculatorEngine;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Menus, Vcl.ComCtrls,
+  CalculatorEngine, UserManager, SessionManager, User;
 
 type
   TCalculatorForm = class(TForm)
@@ -30,25 +30,31 @@ type
     BtnClear: TButton;
     BtnClearEntry: TButton;
     BtnDecimal: TButton;
+    MainMenu: TMainMenu;
+    FileMenu: TMenuItem;
+    LogoutMenuItem: TMenuItem;
+    StatusBar: TStatusBar;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure NumberButtonClick(Sender: TObject);
     procedure OperationButtonClick(Sender: TObject);
     procedure BtnEqualsClick(Sender: TObject);
     procedure BtnClearClick(Sender: TObject);
     procedure BtnClearEntryClick(Sender: TObject);
     procedure BtnDecimalClick(Sender: TObject);
+    procedure LogoutMenuItemClick(Sender: TObject);
   private
     FCalculator: TCalculatorEngine;
     FCurrentInput: string;
     FDecimalEntered: Boolean;
+    FUserManager: TUserManager;
     procedure UpdateDisplay;
+    procedure UpdateStatusBar;
   public
     { Public 宣言 }
   end;
 
-var
-  CalculatorForm: TCalculatorForm;
 
 implementation
 
@@ -59,12 +65,37 @@ begin
   FCalculator := TCalculatorEngine.Create;
   FCurrentInput := '0';
   FDecimalEntered := False;
+  FUserManager := TUserManager.Instance;
+  
   UpdateDisplay;
+  UpdateStatusBar;
 end;
 
 procedure TCalculatorForm.FormDestroy(Sender: TObject);
 begin
   FCalculator.Free;
+  // UserManagerはシングルトンなので解放しない
+end;
+
+procedure TCalculatorForm.FormShow(Sender: TObject);
+begin
+  // セッション有効性チェック
+  if not FUserManager.IsLoggedIn then
+  begin
+    ShowMessage(string('セッションが無効です。アプリケーションを終了します。'));
+    Application.Terminate;
+  end
+  else
+    UpdateStatusBar;
+end;
+
+procedure TCalculatorForm.LogoutMenuItemClick(Sender: TObject);
+begin
+  if MessageDlg(string('ログアウトしますか？'), mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  begin
+    FUserManager.Logout;
+    Application.Terminate;
+  end;
 end;
 
 procedure TCalculatorForm.NumberButtonClick(Sender: TObject);
@@ -145,6 +176,26 @@ begin
     DisplayLabel.Caption := FCalculator.GetDisplay + ': ' + FCalculator.GetErrorMessage
   else
     DisplayLabel.Caption := FCurrentInput;
+end;
+
+procedure TCalculatorForm.UpdateStatusBar;
+var
+  CurrentUser: TUser;
+begin
+  if FUserManager.IsLoggedIn then
+  begin
+    CurrentUser := FUserManager.GetCurrentUser;
+    if Assigned(CurrentUser) then
+    begin
+      StatusBar.Panels[0].Text := string('ユーザー: ') + CurrentUser.ToString;
+      StatusBar.Panels[1].Text := FUserManager.GetSessionInfo;
+    end;
+  end
+  else
+  begin
+    StatusBar.Panels[0].Text := string('ログインしていません');
+    StatusBar.Panels[1].Text := '';
+  end;
 end;
 
 end.

@@ -1,8 +1,8 @@
 object CalculatorForm: TCalculatorForm
   Left = 0
   Top = 0
-  Caption = '電卓'
-  ClientHeight = 400
+  Caption = '電卓アプリケーション'
+  ClientHeight = 450
   ClientWidth = 320
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -10,9 +10,11 @@ object CalculatorForm: TCalculatorForm
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  Menu = MainMenu
   Position = poScreenCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
   TextHeight = 15
   
   object DisplayPanel: TPanel
@@ -337,5 +339,29 @@ object CalculatorForm: TCalculatorForm
       TabOrder = 17
       OnClick = BtnEqualsClick
     end
+  end
+  object MainMenu: TMainMenu
+    Left = 288
+    Top = 16
+    object FileMenu: TMenuItem
+      Caption = 'ファイル(&F)'
+      object LogoutMenuItem: TMenuItem
+        Caption = 'ログアウト(&L)'
+        OnClick = LogoutMenuItemClick
+      end
+    end
+  end
+  object StatusBar: TStatusBar
+    Left = 0
+    Top = 431
+    Width = 320
+    Height = 19
+    Panels = <
+      item
+        Width = 160
+      end
+      item
+        Width = 50
+      end>
   end
 end

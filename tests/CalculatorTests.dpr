@@ -16,8 +16,13 @@ uses
   DUnitX.TestFramework,
   CalculatorEngine in '..\src\engines\CalculatorEngine.pas',
   Unit1 in '..\Unit1.pas' {Form1},
+  User in '..\src\models\User.pas',
+  UserStorage in '..\src\storage\UserStorage.pas',
+  SessionManager in '..\src\auth\SessionManager.pas',
+  UserManager in '..\src\auth\UserManager.pas',
   TestCalculatorEngine in 'TestCalculatorEngine.pas',
-  TestCalculatorForm in 'TestCalculatorForm.pas';
+  TestCalculatorForm in 'TestCalculatorForm.pas',
+  TestAuthSystem in 'TestAuthSystem.pas';
 
 {$IFNDEF TESTINSIGHT}
 var

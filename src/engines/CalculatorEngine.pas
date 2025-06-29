@@ -127,7 +127,7 @@ begin
     opDivide: 
     begin
       if Value2 = 0 then
-        raise Exception.Create('ゼロで割ることはできません')
+        raise Exception.Create(string('ゼロで割ることはできません'))
       else
         Result := Value1 / Value2;
     end;
@@ -139,7 +139,7 @@ end;
 function TCalculatorEngine.GetDisplay: string;
 begin
   if FHasError then
-    Result := 'エラー'
+    Result := string('エラー')
   else
     Result := FloatToStr(FCurrentValue);
 end;
