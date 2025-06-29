@@ -20,7 +20,13 @@ This is a Delphi VCL Windows application project targeting Win32/Win64 platforms
 - Project uses VCL framework with standard Windows components
 
 **Build Commands:**
-Since this is a Delphi project, building typically requires RAD Studio IDE or command line compiler (dcc32.exe/dcc64.exe). Standard build commands are IDE-dependent.
+Since this is a Delphi project, building requires RAD Studio IDE. Delphi Community Edition does not support command line compilation.
+
+**Testing:**
+- Test project located in `tests/` directory
+- Use RAD Studio IDE to open `tests/CalculatorTests.dproj`
+- Run tests with F9 or use View → Test Explorer
+- Tests use DUnitX framework for unit and integration testing
 
 ## Architecture
 
