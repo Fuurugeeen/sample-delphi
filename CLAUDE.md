@@ -1,47 +1,40 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+このファイルは、このリポジトリでコードを操作する際のClaude Code (claude.ai/code) へのガイダンスを提供します。
 
-## Project Overview
+## プロジェクト概要
 
-This is a Delphi VCL Windows application project targeting Win32/Win64 platforms. The project is built using RAD Studio/Delphi development environment.
+これはWin32/Win64プラットフォームを対象としたDelphi VCL電卓アプリケーションです。プロジェクトは、モデル・ビュー分離パターンを使用して基本的な算術演算を実装した標準的な電卓を実装しています。
 
-**Current Structure:**
-- `Project1.dpr` - Main project file and entry point
-- `Unit1.pas` - Main form unit containing TForm1 class  
-- `Unit1.dfm` - Form definition file for TForm1
-- `Project1.dproj` - MSBuild project configuration file
+## ビルドと開発
 
-## Build and Development
+**ビルドコマンド:**
+- 手動ビルド: RAD Studio IDEで`Project1.dproj`を開いてビルド (Ctrl+F9)
+- コマンドラインビルド: `dcc32 Project1.dpr` (DelphiコンパイラがPATHに必要)
 
-**Build Configuration:**
-- Debug builds output to `Win32\Debug\` directory
-- Release builds configured for Win32/Win64 platforms
-- Project uses VCL framework with standard Windows components
+**テスト:**
+- テスト実行: `.\tests\run_tests.bat` または `.\tests\run_tests.ps1`
+- 手動テスト: RAD Studioで`tests/CalculatorTests.dproj`を開いて実行 (F9)
+- テストはDUnitXフレームワークを使用
 
-**Build Commands:**
-Since this is a Delphi project, building requires RAD Studio IDE. Delphi Community Edition does not support command line compilation.
+## アーキテクチャ
 
-**Testing:**
-- Test project located in `tests/` directory
-- Use RAD Studio IDE to open `tests/CalculatorTests.dproj`
-- Run tests with F9 or use View → Test Explorer
-- Tests use DUnitX framework for unit and integration testing
+**コアコンポーネント:**
+- `src/engines/CalculatorEngine.pas` - 計算、状態管理、エラーハンドリングを担当するビジネスロジックエンジン
+- `src/forms/CalcForm.pas` - UIイベント処理を行うメイン電卓フォーム
+- `Unit1.pas` - レガシーメインフォーム (CalcFormに置き換え中)
 
-## Architecture
+**主要な設計パターン:**
+- **モデル・ビュー分離**: `TCalculatorEngine`が全てのビジネスロジックを担当し、`TCalculatorForm`がUIを管理
+- **状態マシン**: エンジンが現在値、保存値、演算、入力状態を追跡
+- **エラーハンドリング**: 日本語エラーメッセージによる集約エラー管理
 
-**Application Structure:**
-- Single-form VCL application using standard Windows API
-- Main form (`TForm1`) serves as the primary user interface
-- Standard Delphi event-driven architecture
-- Uses VCL components for UI rendering
+**データフロー:**
+1. ユーザー入力 → フォームイベントハンドラー → エンジンメソッド
+2. エンジンが内部状態を更新し計算を実行
+3. フォームが`GetDisplay()`経由でエンジンに表示更新を問い合わせ
 
-**Dependencies:**
-- Standard VCL units (Vcl.Forms, Vcl.Controls, etc.)
-- Windows API through Winapi units
-- System runtime libraries
-
-**Development Notes:**
-- Form files (.dfm) contain visual component definitions
-- Unit files (.pas) contain the Pascal source code
-- The project currently has minimal functionality (empty form)
+**重要なクラス:**
+- `TCalculatorEngine`: 演算機能（加算、減算、乗算、除算）を持つコア計算ロジック
+- `TOperation`: 利用可能な演算を定義する列挙型
+- フォームは表示用の`FCurrentInput`文字列を維持し、エンジンが数値状態を管理
