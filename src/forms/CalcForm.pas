@@ -1,4 +1,4 @@
-unit Unit1;
+unit CalcForm;
 
 interface
 
@@ -8,7 +8,7 @@ uses
   CalculatorEngine;
 
 type
-  TForm1 = class(TForm)
+  TCalculatorForm = class(TForm)
     DisplayPanel: TPanel;
     DisplayLabel: TLabel;
     ButtonPanel: TPanel;
@@ -48,13 +48,13 @@ type
   end;
 
 var
-  Form1: TForm1;
+  CalculatorForm: TCalculatorForm;
 
 implementation
 
 {$R *.dfm}
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TCalculatorForm.FormCreate(Sender: TObject);
 begin
   FCalculator := TCalculatorEngine.Create;
   FCurrentInput := '0';
@@ -62,12 +62,12 @@ begin
   UpdateDisplay;
 end;
 
-procedure TForm1.FormDestroy(Sender: TObject);
+procedure TCalculatorForm.FormDestroy(Sender: TObject);
 begin
   FCalculator.Free;
 end;
 
-procedure TForm1.NumberButtonClick(Sender: TObject);
+procedure TCalculatorForm.NumberButtonClick(Sender: TObject);
 var
   Digit: string;
 begin
@@ -81,7 +81,7 @@ begin
   UpdateDisplay;
 end;
 
-procedure TForm1.OperationButtonClick(Sender: TObject);
+procedure TCalculatorForm.OperationButtonClick(Sender: TObject);
 var
   Operation: TOperation;
 begin
@@ -104,7 +104,7 @@ begin
   UpdateDisplay;
 end;
 
-procedure TForm1.BtnEqualsClick(Sender: TObject);
+procedure TCalculatorForm.BtnEqualsClick(Sender: TObject);
 begin
   FCalculator.EnterNumber(FCurrentInput);
   FCalculator.Calculate;
@@ -113,7 +113,7 @@ begin
   UpdateDisplay;
 end;
 
-procedure TForm1.BtnClearClick(Sender: TObject);
+procedure TCalculatorForm.BtnClearClick(Sender: TObject);
 begin
   FCalculator.Clear;
   FCurrentInput := '0';
@@ -121,7 +121,7 @@ begin
   UpdateDisplay;
 end;
 
-procedure TForm1.BtnClearEntryClick(Sender: TObject);
+procedure TCalculatorForm.BtnClearEntryClick(Sender: TObject);
 begin
   FCalculator.ClearEntry;
   FCurrentInput := '0';
@@ -129,7 +129,7 @@ begin
   UpdateDisplay;
 end;
 
-procedure TForm1.BtnDecimalClick(Sender: TObject);
+procedure TCalculatorForm.BtnDecimalClick(Sender: TObject);
 begin
   if not FDecimalEntered then
   begin
@@ -139,7 +139,7 @@ begin
   end;
 end;
 
-procedure TForm1.UpdateDisplay;
+procedure TCalculatorForm.UpdateDisplay;
 begin
   if FCalculator.HasError then
     DisplayLabel.Caption := FCalculator.GetDisplay + ': ' + FCalculator.GetErrorMessage

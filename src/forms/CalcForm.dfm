@@ -1,4 +1,4 @@
-object Form1: TForm1
+object CalculatorForm: TCalculatorForm
   Left = 0
   Top = 0
   Caption = '電卓'
